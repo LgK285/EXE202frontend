@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import UserRegistrationPopup from '@/components/common/UserRegistrationPopup';
+import { demoUsers } from '@/components/common/UserRegistrationPopup';
 import { Link, useNavigate } from 'react-router-dom';
 import { featuredEvents } from '@/data/featuredEvents';
 import Button from '@/components/common/Button';
@@ -37,6 +39,12 @@ const StatsModal: React.FC<StatsModalProps> = ({ event, onClose, depositUnit = 5
   const escHandler = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
   }, [onClose]);
+
+  // Popup state
+  const [showPopup, setShowPopup] = useState(false);
+
+  // Danh sách đăng ký demo
+  const registrations = demoUsers;
 
   useEffect(() => {
     if (!event) return;
@@ -97,8 +105,13 @@ const StatsModal: React.FC<StatsModalProps> = ({ event, onClose, depositUnit = 5
           {/* KPI Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-xl border border-neutral-200 p-4">
-              <div className="text-sm text-neutral-500">Tổng đăng ký</div>
-              <div className="mt-1 text-2xl font-bold text-neutral-900">{total.toLocaleString('vi-VN')}</div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-neutral-500">Tổng đăng ký</div>
+                  <div className="mt-1 text-2xl font-bold text-neutral-900">{total.toLocaleString('vi-VN')}</div>
+                </div>
+                <Button onClick={() => setShowPopup(true)} className="ml-2 text-xs px-2 py-1">Xem danh sách</Button>
+              </div>
             </div>
 
             <div className="rounded-xl border border-neutral-200 p-4">
@@ -148,9 +161,17 @@ const StatsModal: React.FC<StatsModalProps> = ({ event, onClose, depositUnit = 5
           </div>
 
           {/* Footer actions */}
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-end gap-2">
             <Button onClick={onClose} className="rounded-xl">Đóng</Button>
           </div>
+
+        {/* Popup danh sách đăng ký */}
+        {showPopup && (
+          <UserRegistrationPopup
+            registrations={registrations}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
         </div>
       </div>
 
